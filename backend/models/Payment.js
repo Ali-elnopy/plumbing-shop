@@ -1,41 +1,46 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
-const allocationSchema = new mongoose.Schema({
-    invoice: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Invoice',
-        required: true,
+// const allocationSchema = new mongoose.Schema({
+//   invoice: {
+//     type: mongoose.Schema.Types.ObjectId,
+//     ref: "Invoice",
+//     required: true,
+//   },
+//   amount: {
+//     type: Number,
+//     required: true,
+//   },
+// });
+
+const paymentSchema = new mongoose.Schema(
+  {
+    customerId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Customer",
+      required: true,
+      index: true,
     },
     amount: {
-        type: Number,
-        required: true,
+      type: Number,
+      required: true,
     },
-})
+    paymentMethod: {
+      type: String,
+      enum: ["cash", "transfer", "check"],
+    },
+    note: {
+      type: String,
+      trim: true,
+    },
+    createdBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+  },
+  { timestamps: true },
+);
 
-const paymentSchema = new mongoose.Schema({
-    customer: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Customer',
-        required: true,
-    },
-    totalPaid: {
-        type: Number,
-        required: true,
-        min: 1,
-    },
-    allocations: [allocationSchema],
-    cashier: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-        required: true,
-    },
-    notes: {
-        type: String,
-        default: '',
-    },
+paymentSchema.index({ customerId: 1, createdAt: -1 });
 
-},
-{ timestamps: true }
-)
-
-module.exports = mongoose.model('Payment', paymentSchema);
+module.exports = mongoose.model("Payment", paymentSchema);
