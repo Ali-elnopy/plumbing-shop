@@ -1,57 +1,58 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const productSchema = new mongoose.Schema(
-    {
-        name: {
-            type: String,
-            required: [true, 'اسم المنتج مطلوب'],
-            trim: true,
-        },
-        category: {
-            type: String,
-            required: [true, 'الفئة مطلوبة'],
-            trim: true,
-        },
-        unit: {
-            type: String,
-            enum: ['piece', 'meter', 'kg', 'box'],
-            default: 'piece',
-        },
-        purchasePrice: {
-            type: Number,
-            required: [true, 'سعر الشراء مطلوب'],
-            min: 0,
-        },
-        purchasePrice: {
-            type: Number,
-            required: [true, 'سعر الشراء مطلوب'],
-            min: 0,
-        },
-        sellingPrice: {
-            type: Number,
-            required: [true, 'سعر البيع مطلوب'],
-            min: 0,
-        },
-        quantity: {
-            type: Number,
-            required: true,
-            min: 0,
-            default: 0,
-        },
-        minQuantity: {
-            type: Number,
-            default: 5,
-        },
-        isActive: {
-            type: Boolean,
-            default: true,
-        },
+  {
+    name: {
+      type: String,
+      required: true,
+      trim: true,
     },
-    { timestamps: true }
-)
+    category: {
+      type: String,
+      required: true,
+      trim: true,
+      index: true,
+    },
+    unit: {
+      type: String,
+      enum: ["piece", "meter", "kg", "box"], //"kg", "box"
+      default: "piece",
+      required: true,
+    },
+    purchasePrice: {
+      type: Number,
+      required: true,
+      min: 0,
+    },
+    sellingPrice: {
+      type: Number,
+      required: true,
+      min: 0,
+    },
+    stock: {
+      type: Number,
+      required: true,
+      min: 0,
+      default: 0,
+    },
+    minStock: {
+      type: Number,
+      default: 5,
+      min: 0,
+    },
+    isDeleted: {
+      type: Boolean,
+      default: false,
+      index: true,
+    },
+  },
+  { timestamps: true },
+);
 
-productSchema.virtual('isLowStock').get(function (){
-    return this.quantity <= this.minQuantity;
-})
+productSchema.index({ name: "text", category: "text" });
 
-module.exports = mongoose.model('Product',productSchema);
+productSchema.virtual("isLowStock").get(() => {
+  return this.stock <= this.minStock;
+});
+
+module.exports = mongoose.model("Product", productSchema);
