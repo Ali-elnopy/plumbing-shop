@@ -4,7 +4,7 @@ const generateInvoiceNumber = async ()=>{
     const year = new Date().getFullYear();
     const lastInvoice = await Invoice.findOne({
         invoiceNumber: {$regex: `^INV-${year}-`},
-    }).sort({createdAt: -1})
+    }).sort({createdAt: -1}) // بنجيب الأحدث
     let nextNumber = 1
     if(lastInvoice){
         const lastNumber = parseInt(lastInvoice.invoiceNumber.split('-')[2])

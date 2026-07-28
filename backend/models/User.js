@@ -1,42 +1,45 @@
-const mongoose = require('mongoose')
-const bcrypt = require('bcryptjs')
+const mongoose = require("mongoose");
+const bcrypt = require("bcryptjs");
 
-const userSchema = new mongoose.Schema({
-    name:{
-        type:String,
-        required: [true,'الاسم مطلوب'],
-        trim:true,
-    },
+const userSchema = new mongoose.Schema(
+  {
     username: {
-        unique: true,
-        lowercase: true,
+      unique: true,
+      lowercase: true,
+      type: String,
+      required: true,
+      trim: true,
+      index: true,
     },
-    role:{
-        type: String,
-        enum:['admin','cashier'],
-        default:'cashier',
+    role: {
+      type: String,
+      enum: ["admin", "cashier"],
+      default: "cashier",
+      index: true,
     },
-    password:{
-        type: String,
-        requiered:[true,'كلمة السر مطلوبة'],
-        minlength:6,
+    passwordHash: {
+      type: String,
+      required: true,
+      minlength: 6,
     },
-    isActive:{
-        type: Boolean,
-        default:true,
-    }
-},
-{ timestamps: true }
+    isActive: {
+      type: Boolean,
+      default: true,
+    },
+  },
+  { timestamps: true },
 );
 
-userSchema.pre('save', async function (next){
-    if(!this.isModified('password')) return next();
-    this.password = await bcrypt.hash(this.password, 10);
-    next();
-})
+userSchema.pre("save", async (next) => {
+  if (!this.isModified("password")) return next();
 
-userSchema.methods.matchPassword = async function(enteredPassword){
-    return await bcrypt.compare(enteredPassword, this.password)
-}
+  this.password = await bcrypt.hash(this.password, 10);
 
-module.exports = mongoose.model('user',userSchema);
+  next();
+});
+
+userSchema.methods.matchPassword = async (enteredPassword) => {
+  return await bcrypt.compare(enteredPassword, this.password);
+};
+
+module.exports = mongoose.model("user", userSchema);
