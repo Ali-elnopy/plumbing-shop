@@ -1,36 +1,47 @@
-const mongoose = require('mongoose')
+const mongoose = require("mongoose");
 
-const customerSchema = new mongooose.Schema(
-    {
-        name: {
-            type: String,
-            required: [true, 'اسم العميل مطلوب'],
-            trim: true,
-        },
-        phone: {
-            type: String,
-            trim: true,
-            default: '',
-        },
-        type: {
-            type: String,
-            enum: ['plumber', 'regular'],
-            default: 'regular',
-        },
-        totalDebt: {
-            type: Number,
-            default: 0,
-        },
-        notes: {
-            type: String,
-            default: '',
-        },
-        isActive: {
-            type: Boolean,
-            default: true,
-        },
+const customerSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: true,
+      trim: true,
     },
-    { timestamps: true }
-)
+    phone: {
+      type: String,
+      trim: true,
+      required= true,
+      index: true
+    },
+    type: {
+      type: String,
+      enum: ["plumber", "regular"],
+      default: "regular",
+      required: true,
+      index: true
+    },
+    totalDebt: {
+      type: Number,
+      default: 0,
+      min:0
+    },
+    totalPurchases: {
+      type: Number,
+      default: 0,
+      min: 0
+    },
+    // notes: {
+    //   type: String,
+    //   default: "",
+    // },
+    lastVisit: {
+      type: Date,
+      default: null
+    }
+  },
+  { timestamps: true },
+);
 
-module.exports = mongoose.model('Customer', customerSchema);
+customerSchema.index({ name: "text", phone: "text" });
+
+module.exports = mongoose.model("Customer", customerSchema);
