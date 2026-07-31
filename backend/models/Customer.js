@@ -10,25 +10,25 @@ const customerSchema = new mongoose.Schema(
     phone: {
       type: String,
       trim: true,
-      required= true,
-      index: true
+      required: true,
+      index: true,
     },
     type: {
       type: String,
       enum: ["plumber", "regular"],
       default: "regular",
       required: true,
-      index: true
+      index: true,
     },
     totalDebt: {
       type: Number,
       default: 0,
-      min:0
+      min: 0,
     },
     totalPurchases: {
       type: Number,
       default: 0,
-      min: 0
+      min: 0,
     },
     // notes: {
     //   type: String,
@@ -36,8 +36,8 @@ const customerSchema = new mongoose.Schema(
     // },
     lastVisit: {
       type: Date,
-      default: null
-    }
+      default: null,
+    },
   },
   { timestamps: true },
 );
